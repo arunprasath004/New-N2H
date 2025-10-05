@@ -1,4 +1,4 @@
-import axiosInstance from '../lib/axios';
+import { productsAPI } from './api';
 import { Product } from '../types';
 
 export interface ProductFilters {
@@ -10,27 +10,23 @@ export interface ProductFilters {
 }
 
 export const productService = {
-  getAllProducts: async (filters?: ProductFilters): Promise<any[]> => {
-    const response = await axiosInstance.get('/api/products', { params: filters });
-    return response.data;
+  getAllProducts: async (filters?: ProductFilters): Promise<Product[]> => {
+    return await productsAPI.getAll(filters);
   },
 
-  getProductById: async (id: string): Promise<Product> => {
-    const response = await axiosInstance.get(`/api/products/${id}`);
-    return response.data;
+  getProductById: async (id: string): Promise<Product | null> => {
+    return await productsAPI.getById(id);
   },
 
   createProduct: async (data: Omit<Product, 'id' | 'createdAt'>): Promise<Product> => {
-    const response = await axiosInstance.post('/api/products', data);
-    return response.data;
+    return await productsAPI.create(data);
   },
 
   updateProduct: async (id: string, data: Partial<Product>): Promise<Product> => {
-    const response = await axiosInstance.put(`/api/products/${id}`, data);
-    return response.data;
+    return await productsAPI.update(id, data);
   },
 
   deleteProduct: async (id: string): Promise<void> => {
-    await axiosInstance.delete(`/api/products/${id}`);
+    return await productsAPI.delete(id);
   },
 };

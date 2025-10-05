@@ -1,4 +1,4 @@
-import axiosInstance from '../lib/axios';
+import { authAPI } from './api';
 import { User } from '../types';
 
 export interface LoginRequest {
@@ -18,18 +18,23 @@ export interface AuthResponse {
 }
 
 export const authService = {
-  login: async (data: LoginRequest): Promise<AuthResponse> => {
-    const response = await axiosInstance.post('/api/auth/login', data);
-    return response.data;
+  login: async (data: LoginRequest): Promise<User> => {
+    return await authAPI.login(data.email, data.password);
   },
 
-  register: async (data: RegisterRequest): Promise<AuthResponse> => {
-    const response = await axiosInstance.post('/api/auth/register', data);
-    return response.data;
+  register: async (data: RegisterRequest): Promise<User> => {
+    return await authAPI.register(data.name, data.email, data.password);
   },
 
-  forgotPassword: async (email: string): Promise<{ message: string }> => {
-    const response = await axiosInstance.post('/api/auth/forgot-password', { email });
-    return response.data;
+  logout: (): void => {
+    authAPI.logout();
+  },
+
+  getCurrentUser: (): User | null => {
+    return authAPI.getCurrentUser();
+  },
+
+  forgotPassword: async (email: string): Promise<void> => {
+    return await authAPI.forgotPassword(email);
   },
 };
